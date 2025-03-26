@@ -37,6 +37,3 @@ jobs:
             echo "Deployment $i..."
             forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast | tee -a deployment.log
           done
-          
-      - name: Output Deployed Addresses
-        run: cat deployment.log
