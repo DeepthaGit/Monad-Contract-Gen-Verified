@@ -2,13 +2,22 @@
 pragma solidity ^0.8.13;
 
 contract Counter {
-    uint256 public number;
+    uint256 public count;
 
-    function setNumber(uint256 newNumber) public {
-        number = newNumber;
+    // Set the counter using inline assembly.
+    // Directly writes to the storage slot.
+    function set(uint256 newCount) external {
+        assembly {
+            sstore(count.slot, newCount)
+        }
     }
 
-    function increment() public {
-        number++;
+    // Increment the counter using inline assembly.
+    // This avoids the automatic overflow check.
+    function increment() external {
+        assembly {
+            let current := sload(count.slot)
+            sstore(count.slot, add(current, 1))
+        }
     }
 }
