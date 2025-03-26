@@ -20,8 +20,11 @@ jobs:
       - name: Install Foundry
         run: |
           curl -L https://foundry.paradigm.xyz | bash
-          source /home/runner/.bashrc
-          foundryup
+          echo "source $HOME/.bashrc" >> $GITHUB_ENV
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+
+      - name: Verify Foundry Installation
+        run: foundryup
 
       - name: Compile Contract
         run: forge compile
