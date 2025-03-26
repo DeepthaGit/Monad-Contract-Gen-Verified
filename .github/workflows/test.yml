@@ -1,12 +1,13 @@
-name: CI
+name: Deploy Solidity Contract
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
-
-env:
-  FOUNDRY_PROFILE: ci
+    inputs:
+      loop_count:
+        description: 'Number of times to run forge create'
+        required: true
+        default: '1'
+        type: number
 
 jobs:
   check:
@@ -32,4 +33,10 @@ jobs:
 
       - name: Deploy Contract Multiple Times
         run: |
-          forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast
+          for i in $(seq 1 ${{ github.event.inputs.loop_count }}); do
+            echo "Deployment $i..."
+            forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast | tee -a deployment.log
+          done
+          
+      - name: Output Deployed Addresses
+        run: cat deployment.log
