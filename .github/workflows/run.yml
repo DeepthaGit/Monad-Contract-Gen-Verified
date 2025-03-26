@@ -21,7 +21,7 @@ jobs:
         run: |
           curl -L https://foundry.paradigm.xyz | bash
           cd $HOME
-          ls
+          ls -la
           echo "$HOME/.foundry/bin" >> $GITHUB_PATH  # Add Foundry to PATH for future steps
 
       - name: Verify Foundry Installation
