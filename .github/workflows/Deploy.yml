@@ -27,8 +27,7 @@ jobs:
       - name: Compile Contract
         run: forge compile
 
-      - name: Deploy Contract Multiple Times
-        id: deploy
+      - name: Deploy and Verify Contract Multiple Times
         run: |
           for i in $(seq 1 ${{ github.event.inputs.loop_count }}); do
             echo "Deployment $i..."
@@ -37,7 +36,10 @@ jobs:
             deployed_address=$(echo "$deploy_output" | grep -oP 'Deployed to: \K0x[a-fA-F0-9]{40}')
             echo "Deployed Address: $deployed_address"
             echo "deployed_address=$deployed_address" >> $GITHUB_ENV
-            forge verify-contract ${{ env.deployed_address }} src/Counter.sol:Counter \
+            
+            # Verify the contract using the deployed address and contract path
+            echo "Verifying contract at address $deployed_address..."
+            forge verify-contract $deployed_address src/Counter.sol:Counter \
               --chain 10143 \
               --verifier sourcify \
               --verifier-url https://sourcify-api-monad.blockvision.org
