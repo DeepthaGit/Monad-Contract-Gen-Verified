@@ -1,0 +1,1 @@
+source /home/runner/.bashrc
