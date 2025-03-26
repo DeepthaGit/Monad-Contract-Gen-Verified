@@ -17,14 +17,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Foundry
-        run: |
-         curl -L https://foundry.paradigm.xyz | bash
-         source ~/.bashrc
-         echo $PATH
-
-      - name: Verify Foundry Installation
-        run: foundryup  # Ensure foundryup is available now that it's in PATH
+      - name: Foundry Installation
+        run: foundry-rs/foundry-toolchain@v1
 
       - name: Compile Contract
         run: forge compile
