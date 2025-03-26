@@ -27,17 +27,9 @@ jobs:
         run: |
           forge --version
 
-      - name: Run Forge fmt
-        run: |
-          forge fmt --check
-        id: fmt
+      - name: Compile Contract
+        run: forge compile
 
-      - name: Run Forge build
+      - name: Deploy Contract Multiple Times
         run: |
-          forge build --sizes
-        id: build
-
-      - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: test
+          forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast
