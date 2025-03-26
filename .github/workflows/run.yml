@@ -20,8 +20,8 @@ jobs:
       - name: Install Foundry
         run: |
           curl -L https://foundry.paradigm.xyz | bash
-          ls
-          bash run.sh
+          chmod +x run.sh
+          ./run.sh
 
       - name: Verify Foundry Installation
         run: foundryup  # Ensure `foundryup` is now available
