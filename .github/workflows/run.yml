@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Foundry
         run: |
-         curl -L https://foundry.paradigm.xyz | bash
+         python run.py
          source ~/.bashrc
          echo $PATH
 
