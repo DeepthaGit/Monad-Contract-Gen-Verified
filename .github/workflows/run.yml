@@ -20,22 +20,19 @@ jobs:
       - name: Install Foundry
         run: |
           curl -L https://foundry.paradigm.xyz | bash
-          echo "source $HOME/.bashrc" >> $GITHUB_ENV
-          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH  # Add Foundry to PATH
 
       - name: Verify Foundry Installation
-        run: foundryup
+        run: foundryup  # Ensure `foundryup` is now available
 
       - name: Compile Contract
         run: forge compile
 
       - name: Deploy Contract Multiple Times
-        env:
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         run: |
           for i in $(seq 1 ${{ github.event.inputs.loop_count }}); do
             echo "Deployment $i..."
-            forge create --private-key $PRIVATE_KEY src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast | tee -a deployment.log
+            forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast | tee -a deployment.log
           done
 
       - name: Output Deployed Addresses
