@@ -24,16 +24,21 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Show Forge version
-        run: |
-          forge --version
-
       - name: Compile Contract
         run: forge compile
 
       - name: Deploy Contract Multiple Times
+        id: deploy
         run: |
           for i in $(seq 1 ${{ github.event.inputs.loop_count }}); do
             echo "Deployment $i..."
-            forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast | tee -a deployment.log
+            # Deploy contract and capture deployed address from the output
+            deploy_output=$(forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 95000 --broadcast | tee -a deployment.log)
+            deployed_address=$(echo "$deploy_output" | grep -oP 'Deployed to: \K0x[a-fA-F0-9]{40}')
+            echo "Deployed Address: $deployed_address"
+            echo "deployed_address=$deployed_address" >> $GITHUB_ENV
+            forge verify-contract ${{ env.deployed_address }} src/Counter.sol:Counter \
+              --chain 10143 \
+              --verifier sourcify \
+              --verifier-url https://sourcify-api-monad.blockvision.org
           done
