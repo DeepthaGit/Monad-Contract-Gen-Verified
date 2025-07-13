@@ -32,7 +32,7 @@ jobs:
           for i in $(seq 1 ${{ github.event.inputs.loop_count }}); do
             echo "Deployment $i..."
             # Deploy contract and capture deployed address from the output
-            deploy_output=$(forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 150000 --broadcast | tee -a deployment.log)
+            deploy_output=$(forge create --private-key ${{ secrets.PRIVATE_KEY }} src/Counter.sol:Counter --gas-price 100000000000 --gas-limit 190000 --broadcast | tee -a deployment.log)
             deployed_address=$(echo "$deploy_output" | grep -oP 'Deployed to: \K0x[a-fA-F0-9]{40}')
             echo "Deployed Address: $deployed_address"
             echo "deployed_address=$deployed_address" >> $GITHUB_ENV
@@ -40,7 +40,7 @@ jobs:
             # Verify the contract using the deployed address and contract path
             echo "Verifying contract at address $deployed_address..."
             forge verify-contract $deployed_address src/Counter.sol:Counter \
-              --chain 10143 \
+              --chain 50312 \
               --verifier sourcify \
-              --verifier-url https://sourcify-api-monad.blockvision.org
+              --verifier-url https://shannon-explorer.somnia.network/api
           done
